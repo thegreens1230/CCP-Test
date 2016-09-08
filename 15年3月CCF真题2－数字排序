@@ -1,0 +1,29 @@
+/*15年3月CCF真题2－数字排序*/
+import java.util.*;
+public class Main {
+	public static void main(String[] args) {
+		Scanner scan = new Scanner(System.in);
+		int n = scan.nextInt();
+		int[] arr = new int[1000];
+		int max = 0;//记录出现的最大的数的值，以减小查找范围
+		for(int i=0;i<n;i++){
+			int num = scan.nextInt();
+			arr[num] ++;
+			max = num > max ? num : max;
+		}
+		int maxCount = 0;
+		int maxIndex = 0;
+		do{
+			maxCount = 0;
+			arr[maxIndex] = 0;//将上一次已经输出的值的次数置为0
+			for(int i = 1;i <= max;i ++){
+				if(arr[i] > maxCount){
+					maxCount = arr[i];
+					maxIndex = i;
+				}
+			}
+			if(maxCount > 0)
+				System.out.println(maxIndex+" "+maxCount);//找到最大次数并输出
+		}while(maxCount > 0);
+	}
+}
