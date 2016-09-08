@@ -1,0 +1,43 @@
+/*15年3月CCF真题4－网络延时*/
+import java.util.*;
+public class Main {
+	public static void main(String[] args) {
+		Scanner scan = new Scanner(System.in);
+		int numsOfExch = scan.nextInt();
+		int numsOfComp = scan.nextInt();
+		int [] exchSlaveTo = new int[numsOfExch];
+		int [] compSlaveTo = new int[numsOfComp];
+		for(int i=1;i<numsOfExch;i++)
+			exchSlaveTo[i] = scan.nextInt()-1;//使用数组编号，它给定编号-1
+		for(int i=0;i<numsOfComp;i++)
+			compSlaveTo[i] = scan.nextInt()-1;//使用数组编号，它给定编号-1
+		//遍历任意两个电脑，得到消息传播距离的最大值
+		int maxDistance = 0;
+		for(int i=0;i<numsOfComp-1;i++){
+			for(int j=i+1;j<numsOfComp;j++){
+				int temp = distance(exchSlaveTo, compSlaveTo[i],compSlaveTo[j]);
+				if(temp > maxDistance)
+					maxDistance = temp;
+			}
+		}
+		System.out.println(maxDistance+2);
+	}
+	/**
+	 * 任意两个交换机的距离
+	 * @param exchSlaveTo 交换机连接的数组
+	 * @param exch1 交换机1的编号
+	 * @param exch2 交换机2的编号
+	 * @return
+	 */
+	private static int distance(int [] exchSlaveTo, int exch1, int exch2){
+		int dis = 0;
+		while(exch1 != exch2){
+			if(exch1 > exch2)
+				exch1 = exchSlaveTo[exch1];
+			else
+				exch2 = exchSlaveTo[exch2];
+			dis ++;
+		}
+		return dis;
+	}
+}
