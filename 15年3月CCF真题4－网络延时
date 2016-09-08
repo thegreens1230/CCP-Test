@@ -11,7 +11,7 @@ public class Main {
 			exchSlaveTo[i] = scan.nextInt()-1;//使用数组编号，它给定编号-1
 		for(int i=0;i<numsOfComp;i++)
 			compSlaveTo[i] = scan.nextInt()-1;//使用数组编号，它给定编号-1
-		//遍历任意两个电脑，得到消息传播距离的最大值
+		//遍历任意两个电脑，得到消息传播距离的最大值****效率低下
 		int maxDistance = 0;
 		for(int i=0;i<numsOfComp-1;i++){
 			for(int j=i+1;j<numsOfComp;j++){
