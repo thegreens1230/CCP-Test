@@ -1,0 +1,64 @@
+/*15年3月CCF真题3－节日*/
+import java.util.*;
+public class Main {
+	public static void main(String[] args) {
+		Scanner scan = new Scanner(System.in);
+		int month = scan.nextInt();
+		int th = scan.nextInt();
+		int dayOfWeek = scan.nextInt();
+		int yearBegin = scan.nextInt();
+		int yearEnd = scan.nextInt();
+		for(int i=yearBegin;i<=yearEnd;i++){
+			int dayOfMonthtoWeek = daysTo1850(i, month);//得到该年该月的第一天为周几
+			int dayOfMonth = 0;
+			if(dayOfMonthtoWeek <= dayOfWeek){//如果要求的周几比月首的周几大，则从本周开始算
+				dayOfMonth = (th - 1) * 7 + dayOfWeek - dayOfMonthtoWeek + 1;
+			}else{//否则从下周开始算
+				dayOfMonth = th * 7 + dayOfWeek - dayOfMonthtoWeek + 1;
+			}
+			if(dayOfMonth > daysCountofMonth(i, month))
+				System.out.println("none");
+			else
+				System.out.println(i+"/"+month+"/"+dayOfMonth);
+		}
+		
+	}
+	//是否为闰年
+	private static boolean isLeapYear(int year){
+		return (year % 400 == 0) || (year % 4 == 0 && year % 100 != 0);
+	}
+	//某年第一天为周几
+	private static int daysTo1850(int year){
+		int daysTo1850 = 0;
+		for(int i=1850;i<year;i++){
+			if(isLeapYear(i))
+				daysTo1850 += 366;
+			else
+				daysTo1850 += 365;
+		}
+		return (daysTo1850+2) % 7;
+	}
+	//某年某月第一天为周几
+	private static int daysTo1850(int year,int month){
+		int dayOfWeek = daysTo1850(year);
+		int daysToFirstDayOfYear = 0;
+		for(int i=1;i<month;i++){
+			daysToFirstDayOfYear += daysCountofMonth(year, i);
+		}
+		return (daysToFirstDayOfYear + dayOfWeek) % 7;
+	}
+	//任意一年某月有多少天
+	private static int daysCountofMonth(int year, int month){
+		if(month == 1 || month == 3 ||
+				month == 5 || month == 7 ||
+				month == 8 && month == 10 || month == 12)
+			return 31;
+		else if(month == 2){
+			if(isLeapYear(year))
+				return 29;
+			else
+				return 28;
+		}else
+			return 30;
+	}
+}
