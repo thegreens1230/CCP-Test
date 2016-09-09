@@ -1,0 +1,96 @@
+/*15年3月CCF真题5－最小花费*/
+import java.util.*;
+public class Main {
+	public static void main(String[] args) {
+		Scanner scan = new Scanner(System.in);
+		int numsOfCities = scan.nextInt();
+		int numsOfSolution = scan.nextInt();
+		City [] cities = new City[numsOfCities];
+		for(int i=0;i<numsOfCities;i++){
+			cities[i] = new City(scan.nextInt());//初始化所有城市，并给予事物价格
+		}
+		//读取路线信息
+		for(int i=0;i<numsOfCities-1;i++){
+			int cityNum1 = scan.nextInt()-1;
+			int cityNum2 = scan.nextInt()-1;
+			int distance = scan.nextInt();
+			//给前面城市的nextCities赋值
+			Path tempPath = new Path(cities[cityNum2],distance);
+			if(cities[cityNum1].nextCities == null){
+				ArrayList<Path> nextCities = new ArrayList<>();
+				nextCities.add(tempPath);
+				cities[cityNum1].nextCities = nextCities;
+			}else{
+				cities[cityNum1].nextCities.add(tempPath);
+			}
+			//给后面城市的preCities赋值
+			tempPath = new Path(cities[cityNum1],distance);
+			if(cities[cityNum2].preCities == null){
+				ArrayList<Path> preCities = new ArrayList<>();
+				preCities.add(tempPath);
+				cities[cityNum2].preCities = preCities;
+			}else{
+				cities[cityNum2].preCities.add(tempPath);
+			}
+		}
+		//读取待求的路线，每行两个值，分别代表起点和终点
+		int [][] line = new int[numsOfSolution][2];
+		for(int i=0;i<numsOfSolution;i++){
+			line[i][0] = scan.nextInt()-1;
+			line[i][1] = scan.nextInt()-1;
+		}
+		/******************数据读取完成，全部从0开始，以下正式开始解决问题******************/
+		for(int i=0;i<numsOfSolution;i++){
+			int start = line[i][0];
+			int target = line[i][1];
+			LinkedList<LinkedList<City>> lineList = getLines(cities[start], cities[target]);
+			
+		}
+	}
+	
+	private static LinkedList<LinkedList<City>> getLines(City start, City target) {
+		LinkedList<LinkedList<City>> lineList = new LinkedList<>();
+		//如果重复，直接返回
+		if(start == target){
+			return null;
+		}
+		//如果下一个或者上一个城市就是目标城市，则添加并返回***基准情况
+		if(start.nextCities.contains(target) || start.preCities.contains(target)){
+			LinkedList<City> list = new LinkedList<>();
+			list.addFirst(target);
+			list.addFirst(start);
+			lineList.add(list);
+			return lineList;
+		}else if(start.nextCities == null){
+			return null;
+		}else {
+			//向后走
+			for(Path city:start.preCities){
+				LinkedList<LinkedList<City>> initList = getLines(city.toSomeCity,target);
+				if(initList != null){
+					/*搞不清楚基准情况了，擦*/
+				}
+			}
+		}
+		
+		return null;
+	}
+
+	private static class City{
+		int foodPrice;//食物价格
+		ArrayList<Path> nextCities;//后面的城市及距离
+		ArrayList<Path> preCities;//前面的城市及距离
+		City(int foodPrice){
+			this.foodPrice = foodPrice;
+		}
+	}
+	//记录下一个或者上一个城市及距离
+	private static class Path{
+		City toSomeCity;//可去的某个城市
+		int distance;
+		Path(City toSomeCity, int distance){
+			this.toSomeCity = toSomeCity;
+			this.distance = distance;
+		}
+	}
+}
