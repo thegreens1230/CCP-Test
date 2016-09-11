@@ -1,0 +1,79 @@
+import java.text.DecimalFormat;
+import java.util.*;
+public class Solution {
+	public static void main(String [] args){
+		Scanner scan = new Scanner(System.in);
+		ArrayList<BuyOrSell> buyOrSells = new ArrayList<>();
+		ArrayList<Double> priceList = new ArrayList<>();
+		int [] cancel = new int [5000];
+		int indexOfCancel = 0;
+		while(scan.hasNext()){
+			String toDo = scan.next();//需要做什么buy sell cancel
+			if(toDo.equals("buy") || toDo.equals("sell")){
+				double p = scan.nextDouble();
+				int s = scan.nextInt();
+				priceList.add(p);
+				if(toDo.equals("buy")){//buy
+					buyOrSells.add(new BuyOrSell(p,s,false));
+				}else//sell
+					buyOrSells.add(new BuyOrSell(p,s,true));
+			}
+			else{//cancel
+				buyOrSells.add(null);
+				cancel[indexOfCancel] = scan.nextInt()-1;
+			}
+			indexOfCancel ++;
+		}
+		Collections.sort(priceList);
+		Collections.reverse(priceList);
+		
+		int buyCount = 0;
+		int sellCount = 0;
+		double sucPrice = 0.0;
+		int maxCount = 0;
+		//从最高价开始遍历***to be continued
+		for(int i=0;i<priceList.size();i++){
+			if(i == 0 || (i > 0 && priceList.get(i) != priceList.get(i-1))){
+				for(int j=0;j<buyOrSells.size();j++){
+					BuyOrSell bs = buyOrSells.get(j);
+					if(bs != null){//买或者卖
+						if(bs.buyOrSell && bs.p <= priceList.get(i)){//卖
+							sellCount += bs.s;
+						}
+						if(!bs.buyOrSell && bs.p >= priceList.get(i)){
+							buyCount += bs.s;
+						}
+					}else{
+						bs = buyOrSells.get(cancel[j]);
+						if(bs.buyOrSell && bs.p <= priceList.get(i)){//卖
+							sellCount -= bs.s;
+						}
+						if(!bs.buyOrSell && bs.p >= priceList.get(i)){
+							buyCount -= bs.s;
+						}
+					}
+				}
+		
+			}
+			int tempMaxCount = Math.min(buyCount, sellCount);
+			if(tempMaxCount > maxCount){
+				maxCount = tempMaxCount;
+				sucPrice = priceList.get(i);
+			}
+			buyCount = 0;
+			sellCount = 0;
+		}
+		DecimalFormat d = new DecimalFormat("#.00");
+		System.out.println(d.format(sucPrice)+" "+maxCount);
+	}
+}
+class BuyOrSell{
+	double p;
+	int s;
+	boolean buyOrSell;//false-buy true-sell
+	public BuyOrSell(double p, int s,boolean buyOrSell){
+		this.p = p;
+		this.s = s;
+		this.buyOrSell = buyOrSell;
+	}
+}
